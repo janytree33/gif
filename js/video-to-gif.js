@@ -1,25 +1,32 @@
+// 유틸리티 파일에서 용량 표기 함수(formatBytes)와 팝업 메시지 함수(showToast)를 가져옵니다.
 import { formatBytes, showToast } from './utils.js';
 
+// [로컬 불러오기 추가] 인터넷 주소 대신, 우리 컴퓨터에 설치된 라이브러리에서 직접 변환 도구들을 가져옵니다.
+import { FFmpeg } from '/node_modules/@ffmpeg/ffmpeg/dist/esm/index.js';
+import { fetchFile } from '/node_modules/@ffmpeg/util/dist/esm/index.js';
+
+// 전역 변수로 비디오 변환 엔진(ffmpeg)과 현재 선택한 비디오 파일(currentFile)을 저장합니다.
 let ffmpeg = null;
-let ffmpegUtil = null;
 let currentFile = null;
 
-// 모듈 초기화 (app.js에서 호출)
+// [초기화 함수] 웹 사이트가 실행될 때 비디오 업로드 영역에 이벤트 리스너(마우스 드래그, 클릭 등)를 연결합니다.
 export function initVideoToGif() {
     const dropzone = document.getElementById('v2g-dropzone');
     const fileInput = document.getElementById('v2g-file-input');
     const startBtn = document.getElementById('btn-start-v2g');
 
-    // 드래그 앤 드롭 이벤트
+    // 사용자가 파일을 드래그해서 업로드 영역 위에 올렸을 때의 시각 효과 설정
     dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropzone.classList.add('drag-over');
     });
 
+    // 드래그하다가 영역 밖으로 마우스가 나갔을 때 시각 효과 제거
     dropzone.addEventListener('dragleave', () => {
         dropzone.classList.remove('drag-over');
     });
 
+    // 마우스를 놓아 파일을 영역 안에 떨어뜨렸을 때(드롭) 파일 처리 시작
     dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropzone.classList.remove('drag-over');
@@ -28,14 +35,14 @@ export function initVideoToGif() {
         }
     });
 
-    // 파일 입력 이벤트
+    // 버튼을 클릭해서 파일 탐색기를 열어 파일을 선택했을 때
     fileInput.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
             handleFileSelect(e.target.files[0]);
         }
     });
 
-    // 변환 시작 버튼
+    // "GIF 변환 시작" 버튼을 클릭했을 때의 이벤트
     startBtn.addEventListener('click', () => {
         if (currentFile) {
             startConversion(currentFile);
@@ -45,98 +52,112 @@ export function initVideoToGif() {
     });
 }
 
-// FFmpeg 지연 로딩 (처음 변환을 시도할 때 또는 파일이 선택되었을 때 로드)
+// 로딩 프로미스(동작 진행 상태)를 저장하여 동일한 로드가 여러 번 겹쳐 일어나는 현상을 방지합니다.
+let ffmpegLoadingPromise = null;
+
+// [비디오 변환 엔진 로딩 함수] FFmpeg 엔진을 안전하게 브라우저에 탑재합니다.
 async function ensureFFmpegLoaded() {
-    if (ffmpeg) return true;
+    // 이미 로드가 완료되어 있으면 즉시 true를 리턴하고 종료합니다.
+    if (ffmpeg && ffmpeg.loaded) return true;
+    if (ffmpegLoadingPromise) return ffmpegLoadingPromise;
 
     const statusArea = document.getElementById('v2g-status-area');
     const statusText = document.getElementById('v2g-status-text');
     
+    // 로딩 화면(빙글빙글 도는 스피너)을 보여줍니다.
     statusArea.classList.remove('hidden');
     statusText.textContent = 'FFmpeg 모듈 로드 중... (초기 1회)';
 
-    try {
-        // CDN에서 모듈 동적 임포트
-        const ffmpegModule = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/+esm');
-        const utilModule = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.2/+esm');
-        
-        ffmpeg = new ffmpegModule.FFmpeg();
-        ffmpegUtil = utilModule;
+    ffmpegLoadingPromise = (async () => {
+        try {
+            // FFmpeg 엔진의 새 인스턴스를 만듭니다.
+            ffmpeg = new FFmpeg();
+            
+            // [경로 수정] 인터넷 CDN 주소 대신, 로컬 컴퓨터 내부의 안전한 파일 경로를 지정합니다.
+            // 이렇게 하면 웹 브라우저의 보안 검사를 완벽히 통과하여 에러가 발생하지 않습니다.
+            await ffmpeg.load({
+                coreURL: '/node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.js',
+                wasmURL: '/node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.wasm',
+                classWorkerURL: '/node_modules/@ffmpeg/ffmpeg/dist/esm/worker.js' // 웹 워커 역시 로컬 경로를 사용합니다.
+            });
+            
+            statusArea.classList.add('hidden');
+            showToast('모듈 로드 완료! 변환 준비가 되었습니다.');
+            return true;
+        } catch (error) {
+            console.error('FFmpeg 로드 오류 상세:', error);
+            ffmpeg = null; // 실패 시 다시 시도할 수 있도록 초기화합니다.
+            statusArea.classList.add('hidden');
+            showToast(`모듈 로드 실패: ${error.message || '네트워크/보안 환경을 확인하세요.'}`, 'error');
+            return false;
+        } finally {
+            ffmpegLoadingPromise = null;
+        }
+    })();
 
-        const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
-        
-        // 코어 파일 로드 (싱글 스레드 빌드)
-        await ffmpeg.load({
-            coreURL: await ffmpegUtil.toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-            wasmURL: await ffmpegUtil.toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-        });
-        
-        statusArea.classList.add('hidden');
-        showToast('모듈 로드 완료! 변환 준비가 되었습니다.');
-        return true;
-    } catch (error) {
-        console.error('FFmpeg 로드 오류:', error);
-        statusArea.classList.add('hidden');
-        showToast('FFmpeg 로드 실패. 브라우저가 WebAssembly를 지원하는지 확인해주세요.', 'error');
-        return false;
-    }
+    return ffmpegLoadingPromise;
 }
 
-// 비디오 파일 선택 처리
+// [파일 선택 처리 함수] 사용자가 올린 비디오 파일을 검사하고 준비시킵니다.
 async function handleFileSelect(file) {
+    // 비디오 파일 확장자가 맞는지 체크합니다.
     if (!file.type.startsWith('video/')) {
         showToast('동영상 파일(MP4, WebM 등)만 선택할 수 있습니다.', 'error');
         return;
     }
 
     currentFile = file;
+    // 변환 옵션 창(FPS, 해상도 선택 화면)을 화면에 띄웁니다.
     document.getElementById('v2g-options-panel').classList.remove('hidden');
     
-    // 파일명을 업로드 존에 표시
+    // 업로드 영역에 선택한 파일명과 용량을 표기합니다.
     const titleEl = document.querySelector('#v2g-dropzone .upload-zone-title');
     const subtitleEl = document.querySelector('#v2g-dropzone .upload-zone-subtitle');
     titleEl.textContent = file.name;
     subtitleEl.textContent = formatBytes(file.size);
     
-    // 백그라운드에서 FFmpeg 미리 로딩
+    // 파일 선택 즉시, 사용자가 "변환 시작" 버튼을 누르기 전에 백그라운드에서 미리 엔진을 탑재하기 시작합니다.
     ensureFFmpegLoaded();
 }
 
-// 비디오에서 썸네일(첫 프레임) 추출 (UI용)
+// [썸네일 추출 함수] 비디오의 0.1초 시점 화면을 캡처해서 화면 목록에 표시할 작은 썸네일 이미지를 만듭니다.
 function extractThumbnail(file) {
     return new Promise((resolve) => {
         const video = document.createElement('video');
+        // 브라우저 메모리에 임시 가상 비디오 파일 경로를 생성합니다.
         video.src = URL.createObjectURL(file);
         video.muted = true;
-        video.currentTime = 0.5; // 첫 프레임이 검은색일 수 있으므로 약간 뒤
+        video.currentTime = 0.5; // 첫 부분이 검정색 화면일 수 있으므로 0.5초 부분으로 이동합니다.
         
         video.addEventListener('loadeddata', () => {
             video.currentTime = 0.1;
         });
         
+        // 0.1초 지점으로 이동이 완료되면 캔버스(Canvas)에 비디오 화면을 그려서 이미지로 추출합니다.
         video.addEventListener('seeked', () => {
             const canvas = document.createElement('canvas');
             canvas.width = 160;
             canvas.height = (video.videoHeight / video.videoWidth) * 160;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // 압축된 썸네일 JPG 이미지 데이터를 생성합니다.
             const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-            URL.revokeObjectURL(video.src);
+            URL.revokeObjectURL(video.src); // 메모리 누수 방지를 위해 가상 주소를 제거합니다.
             resolve(dataUrl);
         });
         
         video.addEventListener('error', () => {
-            resolve(null); // 에러 시 null 반환
+            resolve(null); // 에러 발생 시 빈 값을 전달합니다.
         });
     });
 }
 
-// 변환 UI 항목 생성 및 반환
+// [결과 목록 항목 추가 함수] 변환 진행 중 상태와 완료된 결과물을 표시할 카드 레이아웃을 생성합니다.
 async function createConversionItem(file) {
     const listContainer = document.getElementById('v2g-result-list');
     const itemId = 'conv-' + Date.now();
     
-    // 썸네일 생성 시도
+    // 비디오에서 썸네일을 가져옵니다.
     let thumbSrc = await extractThumbnail(file);
     
     const html = `
@@ -163,10 +184,11 @@ async function createConversionItem(file) {
         </div>
     `;
     
-    // 리스트 맨 위에 추가
+    // 리스트 상단에 최신 작업 항목을 삽입합니다.
     listContainer.insertAdjacentHTML('afterbegin', html);
-    window.refreshIcons();
+    window.refreshIcons(); // 아이콘 라이브러리(Lucide)를 리프레시합니다.
     
+    // 변환 진행 중에 수시로 상태를 업데이트해 주기 위한 제어 인터페이스 객체를 리턴합니다.
     return {
         updateProgress: (percent) => {
             document.getElementById(`${itemId}-progress-bar`).style.width = `${percent}%`;
@@ -188,7 +210,7 @@ async function createConversionItem(file) {
             dlBtn.href = url;
             dlBtn.download = file.name.replace(/\.[^/.]+$/, "") + ".gif";
             
-            // 썸네일을 변환된 GIF로 교체
+            // 왼쪽 썸네일을 최종 변환 완료된 움직이는 GIF 이미지로 교체합니다.
             const thumbEl = document.querySelector(`#${itemId} .v2g-thumbnail`);
             thumbEl.innerHTML = `<img src="${url}" alt="GIF Result">`;
         },
@@ -201,62 +223,72 @@ async function createConversionItem(file) {
     };
 }
 
-// 실제 변환 로직
+// [실제 비디오 변환 핵심 함수] 비디오를 가져와서 FFmpeg 명령어로 변환을 처리합니다.
 async function startConversion(file) {
-    // 1. FFmpeg 로드 확인
+    // 1. 변환 엔진 로딩이 확실하게 되었는지 확인합니다.
     const loaded = await ensureFFmpegLoaded();
     if (!loaded) return;
     
-    // 2. 옵션 가져오기
+    // 2. 사용자가 선택한 FPS와 해상도 값을 화면에서 읽어옵니다.
     const fps = document.getElementById('v2g-opt-fps').value;
     const scale = document.getElementById('v2g-opt-scale').value;
     
-    // 3. UI에 새 항목 생성
+    // 3. 진행 상황을 표기할 진행 바 카드를 리스트에 띄웁니다.
     const uiItem = await createConversionItem(file);
     
     try {
         uiItem.updateProgress(5);
         
-        // 4. 가상 파일 시스템에 비디오 쓰기
+        // 4. 가상 파일 이름을 임의로 지정합니다.
         const inputName = 'input_' + Date.now() + '.mp4';
         const outputName = 'output_' + Date.now() + '.gif';
         
-        await ffmpeg.writeFile(inputName, await ffmpegUtil.fetchFile(file));
+        // [수정] 로컬에서 임포트한 fetchFile 유틸리티를 활용하여 가상 폴더 시스템에 원본 비디오 파일을 씁니다.
+        await ffmpeg.writeFile(inputName, await fetchFile(file));
         uiItem.updateProgress(10);
         
-        // 5. 진행률 이벤트 핸들러 설정
+        // 5. 엔진 내부에서 비디오 변환이 몇 퍼센트 되었는지 모니터링하는 감시기를 켭니다.
         ffmpeg.on('progress', ({ progress }) => {
-            // progress는 0 ~ 1 사이 값
+            // progress는 0에서 1 사이 소수이므로 백분율로 계산하여 바를 업데이트합니다.
             const p = Math.max(10, Math.min(99, progress * 100));
             uiItem.updateProgress(p);
         });
+
+        // 콘솔(F12 개발자 도구) 창에 상세 진행 로그를 띄웁니다.
+        let lastLog = '';
+        ffmpeg.on('log', ({ message }) => {
+            console.log('[FFmpeg]', message);
+            lastLog = message;
+        });
         
-        // 6. FFmpeg 변환 명령어 실행
-        // 고품질 GIF를 위한 팔레트 기반 필터 적용
+        // 6. 고화질 GIF 생성을 위한 핵심 비디오 변환 명령어(필터)를 조립합니다.
+        // Lanczos 알고리즘을 사용한 2단계 화질 보정 기법을 적용합니다.
         const scaleFilter = scale === '-1' ? '' : `scale=${scale}:-1:flags=lanczos,`;
         const filterStr = `fps=${fps},${scaleFilter}split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`;
         
+        // 7. 엔진 실행 커맨드를 작동시킵니다.
         await ffmpeg.exec([
             '-i', inputName,
             '-vf', filterStr,
             outputName
         ]);
         
-        // 7. 결과 파일 읽기
+        // 8. 완료된 가상 결과물 파일을 브라우저 메모리로 읽어옵니다.
         const data = await ffmpeg.readFile(outputName);
         const gifBlob = new Blob([data.buffer], { type: 'image/gif' });
         
-        // 8. 가상 파일 정리
+        // 9. 가상 저장소 공간 낭비를 막기 위해 생성했던 임시 가상 파일들을 제거합니다.
         ffmpeg.deleteFile(inputName);
         ffmpeg.deleteFile(outputName);
         
-        // 9. UI 완료 처리
+        // 10. UI 화면에 변환 완료 처리 및 성공 알림 팝업을 띄웁니다.
         uiItem.complete(gifBlob);
         showToast('GIF 변환이 성공적으로 완료되었습니다.');
         
     } catch (err) {
         console.error('변환 중 오류:', err);
-        uiItem.error('변환 과정에서 오류가 발생했습니다.');
-        showToast('변환 중 오류가 발생했습니다.', 'error');
+        // 에러가 났을 때 마지막 상세 에러 메시지를 표시하여 조치를 돕습니다.
+        uiItem.error(`변환 실패. (마지막 로그: ${typeof lastLog !== 'undefined' ? lastLog : '없음'})`);
+        showToast('변환 중 오류가 발생했습니다. 개발자 도구(F12) 콘솔을 확인해주세요.', 'error');
     }
 }
