@@ -1,0 +1,121 @@
+/* ============================================
+   GIF Studio - 헤더 스타일 (Header Styles)
+   ============================================
+   로고, 탭 네비게이션, 글라스모피즘 효과를 
+   담당하는 스타일입니다.
+   ============================================ */
+
+/* --- 헤더 컨테이너 --- */
+#app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+  /* 글라스모피즘 효과 */
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* --- 로고 --- */
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: all var(--transition-default);
+  flex-shrink: 0;
+}
+
+.logo-link:hover {
+  transform: scale(1.03);
+}
+
+.logo-link:hover .logo-img {
+  filter: brightness(1.15);
+}
+
+.logo-img {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  transition: filter var(--transition-default);
+}
+
+/* --- 탭 네비게이션 --- */
+.tab-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  position: relative;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  border: 1px solid var(--border-subtle);
+}
+
+.tab-btn {
+  position: relative;
+  z-index: 2;
+  padding: 8px 20px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  transition: color var(--transition-default);
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--text-secondary);
+}
+
+.tab-btn.active {
+  color: white;
+}
+
+/* 탭 인디케이터 (슬라이딩 배경) */
+.tab-indicator {
+  position: absolute;
+  z-index: 1;
+  height: calc(100% - 6px);
+  top: 3px;
+  background: var(--accent-gradient);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-slow);
+  box-shadow: var(--shadow-glow);
+}
+
+/* --- 반응형 --- */
+@media (max-width: 768px) {
+  #app-header {
+    padding: 0 var(--space-md);
+  }
+
+  .logo-img {
+    height: 28px;
+  }
+
+  .tab-nav {
+    gap: 0;
+    padding: 2px;
+  }
+
+  .tab-btn {
+    padding: 6px 12px;
+    font-size: var(--text-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .tab-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}

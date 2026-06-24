@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>통합 GIF 스튜디오 (Video to GIF & GIF Editor)</title>
+  
+  <!-- 폰트 로드 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- CSS 로드 -->
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/video-to-gif.css">
+  <link rel="stylesheet" href="css/gif-editor.css">
+  
+  <!-- 아이콘 라이브러리 (Lucide) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <!-- ================= HEADER ================= -->
+  <header id="app-header">
+    <a href="https://nanalab.kr" class="logo-link" target="_blank" rel="noopener noreferrer">
+      <!-- 사용자가 제공한 logo.png.png 파일 사용 -->
+      <img src="logo.png.png" alt="Nanalab Logo" class="logo-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'30\'><text x=\'0\' y=\'20\' fill=\'white\' font-family=\'sans-serif\' font-size=\'20\'>Nanalab</text></svg>'">
+    </a>
+    
+    <nav class="tab-nav" id="main-tabs">
+      <div class="tab-indicator"></div>
+      <button class="tab-btn active" data-target="video-to-gif">Video to GIF</button>
+      <button class="tab-btn" data-target="gif-editor">Smart GIF Studio</button>
+    </nav>
+  </header>
+
+  <!-- ================= 1. VIDEO TO GIF PAGE ================= -->
+  <main id="video-to-gif" class="page active">
+    <section class="v2g-hero">
+      <h1><span class="gradient-text">Video</span> <span class="arrow">→</span> <span class="gradient-text">GIF</span></h1>
+      <p class="subtitle">Make your own GIF Animation!</p>
+    </section>
+
+    <section class="v2g-upload-section">
+      <div class="upload-zone" id="v2g-dropzone">
+        <i data-lucide="video" class="upload-zone-icon"></i>
+        <h3 class="upload-zone-title">동영상 파일 업로드</h3>
+        <p class="upload-zone-subtitle">여기로 파일을 드래그하거나 클릭하여 탐색하세요 (MP4, WebM 등)</p>
+        <div class="upload-zone-divider">OR</div>
+        <button class="btn btn-secondary" onclick="document.getElementById('v2g-file-input').click()">
+          <i data-lucide="folder-search"></i> 파일 선택하기
+        </button>
+        <input type="file" id="v2g-file-input" accept="video/*">
+      </div>
+    </section>
+
+    <!-- 변환 옵션 패널 (파일 선택 시 나타남) -->
+    <section class="v2g-options hidden" id="v2g-options-panel">
+      <div class="v2g-options-title">
+        <i data-lucide="settings-2"></i> 변환 옵션 설정
+      </div>
+      <div class="v2g-options-grid">
+        <div class="v2g-option-item">
+          <label class="v2g-option-label" for="v2g-opt-fps">프레임 레이트 (FPS)</label>
+          <select id="v2g-opt-fps" class="v2g-option-select">
+            <option value="29">29 FPS (매끄러움, 고용량)</option>
+            <option value="20">20 FPS (균형)</option>
+            <option value="15" selected>15 FPS (추천)</option>
+            <option value="10">10 FPS (저용량)</option>
+          </select>
+        </div>
+        <div class="v2g-option-item">
+          <label class="v2g-option-label" for="v2g-opt-scale">해상도 (가로 너비)</label>
+          <select id="v2g-opt-scale" class="v2g-option-select">
+            <option value="-1" selected>원본 유지</option>
+            <option value="640">최대 640px</option>
+            <option value="480">최대 480px (추천)</option>
+            <option value="320">최대 320px (저용량)</option>
+          </select>
+        </div>
+      </div>
+      <div class="v2g-convert-btn">
+        <button class="btn btn-primary btn-lg" id="btn-start-v2g">
+          <i data-lucide="play"></i> GIF 변환 시작
+        </button>
+      </div>
+    </section>
+
+    <!-- FFmpeg 로딩 상태 -->
+    <div id="v2g-status-area" class="v2g-ffmpeg-status hidden">
+      <div class="spinner"></div>
+      <span id="v2g-status-text">FFmpeg 로딩 중...</span>
+    </div>
+
+    <!-- 변환 결과 목록 -->
+    <section class="v2g-conversion-list" id="v2g-result-list">
+      <!-- 변환 아이템들이 여기에 동적으로 추가됨 -->
+    </section>
+  </main>
+
+  <!-- ================= 2. SMART GIF STUDIO PAGE ================= -->
+  <main id="gif-editor" class="page">
+    
+    <!-- 초기 화면 (파일 업로드 전) -->
+    <section id="editor-initial">
+      <h1>Free GIF Editor</h1>
+      <div class="editor-description">
+        <p>Edit your GIF files for free! Various features like resizing, downscaling, cropping, and FPS adjustment are provided at no cost.</p>
+        <p class="highlight">All data is processed locally in your browser. Since no data is sent externally, you can use it safely without worrying about data leaks.</p>
+      </div>
+      
+      <div class="upload-zone" id="editor-dropzone">
+        <i data-lucide="image-plus" class="upload-zone-icon"></i>
+        <h3 class="upload-zone-title">GIF 파일 업로드</h3>
+        <p class="upload-zone-subtitle">편집할 GIF 파일을 드래그 앤 드롭하거나 선택하세요</p>
+        <button class="btn btn-secondary mt-md" onclick="document.getElementById('editor-file-input').click()">
+          <i data-lucide="folder-open"></i> Choose File
+        </button>
+        <input type="file" id="editor-file-input" accept="image/gif">
+      </div>
+    </section>
+
+    <!-- 편집 워크스페이스 (파일 업로드 후) -->
+    <section id="editor-workspace" class="hidden">
+      <div class="editor-layout">
+        
+        <!-- 왼쪽 칼럼: 이미지 패널들 -->
+        <div class="panel-column" id="editor-panels-container">
+          
+          <!-- 원본 GIF 패널 -->
+          <div class="image-panel" id="panel-original">
+            <div class="panel-header">
+              <div class="panel-title">
+                <div class="panel-title-icon original"></div>
+                Original GIF
+              </div>
+              <div class="panel-actions">
+                <button class="btn btn-primary panel-download-btn" id="btn-download-original">
+                  <i data-lucide="download"></i> Download
+                </button>
+                <button class="btn-toggle" aria-label="Toggle Panel" onclick="togglePanel('panel-original')">
+                  <i data-lucide="chevron-down"></i>
+                </button>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-image-container" id="container-original">
+                <img id="img-original" src="" alt="Original GIF">
+              </div>
+              <div class="panel-metadata">
+                <div class="metadata-grid" id="meta-original">
+                  <!-- 메타데이터가 여기에 채워짐 -->
+                  <div class="metadata-item">
+                    <div class="metadata-label">Size</div>
+                    <div class="metadata-value" id="meta-orig-size">-</div>
+                  </div>
+                  <div class="metadata-item">
+                    <div class="metadata-label">Resolution</div>
+                    <div class="metadata-value" id="meta-orig-res">-</div>
+                  </div>
+                  <div class="metadata-item">
+                    <div class="metadata-label">Total Frames</div>
+                    <div class="metadata-value" id="meta-orig-frames">-</div>
+                  </div>
+                  <div class="metadata-item">
+                    <div class="metadata-label">FPS</div>
+                    <div class="metadata-value" id="meta-orig-fps">-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 결과물 패널 컨테이너 (여기에 새 패널들이 추가됨) -->
+          <div id="results-container"></div>
+          
+        </div>
+
+        <!-- 오른쪽 칼럼: 에디터 툴 -->
+        <div class="tools-column">
+          <div id="editor-tools-panel">
+            <h2 class="tools-panel-title">Editor Tools</h2>
+            
+            <!-- 도구 메인 메뉴 (3x3 그리드) -->
+            <div id="tools-main-menu">
+              <div class="tools-grid">
+                <button class="tool-btn" data-tool="resize">
+                  <i data-lucide="scaling" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Resize</span>
+                </button>
+                <button class="tool-btn" data-tool="crop">
+                  <i data-lucide="crop" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Crop</span>
+                </button>
+                <button class="tool-btn" data-tool="downsizing">
+                  <i data-lucide="minimize" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Downsizing</span>
+                </button>
+                <button class="tool-btn" data-tool="convert">
+                  <i data-lucide="file-symlink" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Convert</span>
+                </button>
+                <button class="tool-btn" data-tool="rotate">
+                  <i data-lucide="rotate-cw" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Rotate</span>
+                </button>
+                <button class="tool-btn" data-tool="optimize">
+                  <i data-lucide="zap" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Optimize</span>
+                </button>
+                <button class="tool-btn" data-tool="reverse">
+                  <i data-lucide="history" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Reverse</span>
+                </button>
+                <button class="tool-btn" data-tool="speed">
+                  <i data-lucide="gauge" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Speed</span>
+                </button>
+                <button class="tool-btn" data-tool="cut">
+                  <i data-lucide="scissors" class="tool-btn-icon"></i>
+                  <span class="tool-btn-label">Cut</span>
+                </button>
+              </div>
+              
+              <button class="btn btn-outline" id="btn-choose-another" style="margin-top: 24px;">
+                <i data-lucide="refresh-cw"></i> Choose Another File
+              </button>
+            </div>
+            
+            <!-- 도구 상세 설정 패널 (선택 시 나타남) -->
+            <div id="tool-detail" class="hidden">
+              <div class="tool-detail-header">
+                <i data-lucide="settings" class="tool-detail-icon" id="tool-detail-icon"></i>
+                <h3 class="tool-detail-title" id="tool-detail-title">Tool Name</h3>
+              </div>
+              
+              <div id="tool-detail-content">
+                <!-- 개별 도구의 UI가 여기에 주입됨 -->
+              </div>
+              
+              <div class="tool-actions">
+                <button class="btn btn-secondary" id="btn-tool-back">
+                  <i data-lucide="arrow-left"></i> Back
+                </button>
+                <button class="btn btn-primary" id="btn-tool-go">
+                  <i data-lucide="check-circle-2"></i> Go!
+                </button>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 토스트 알림 컨테이너 -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- 스크립트 로드 (ES Module 방식) -->
+  <script type="module" src="js/app.js"></script>
+
+  <!-- Lucide 아이콘 초기화 스크립트 -->
+  <script>
+    lucide.createIcons();
+    
+    // 패널 접기/펼치기 유틸리티 함수 (전역)
+    window.togglePanel = function(panelId) {
+      const panel = document.getElementById(panelId);
+      const body = panel.querySelector('.panel-body');
+      const btn = panel.querySelector('.btn-toggle');
+      
+      body.classList.toggle('collapsed');
+      btn.classList.toggle('collapsed');
+    };
+  </script>
+</body>
+</html>
