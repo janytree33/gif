@@ -5,34 +5,37 @@
    버튼, 카드 등의 기본 스타일을 정의합니다.
    ============================================ */
 
+/* 폰트 및 아이콘 통합 로드 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
 /* --- 1. CSS 커스텀 프로퍼티 (디자인 토큰) --- */
 :root {
-  /* 배경색 */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-tertiary: #1a1a2e;
-  --bg-card: rgba(18, 18, 26, 0.85);
-  --bg-card-hover: rgba(26, 26, 46, 0.9);
-  --bg-overlay: rgba(0, 0, 0, 0.6);
+  /* 배경색 (맑고 따뜻한 라이트 테마) */
+  --bg-primary: #ecfeff;      /* 연한 청록 시안 바탕 */
+  --bg-secondary: #f8fafc;    /* 연한 슬레이트 화이트 */
+  --bg-tertiary: #f1f5f9;     /* 차분한 라이트 그레이 */
+  --bg-card: rgba(255, 255, 255, 0.9); /* 사용자의 복지몰/음료투표 스타일인 반투명 화이트 */
+  --bg-card-hover: rgba(255, 255, 255, 0.98);
+  --bg-overlay: rgba(15, 23, 42, 0.4);
 
   /* 테두리 */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.1);
-  --border-accent: rgba(99, 102, 241, 0.3);
-  --border-accent-strong: rgba(99, 102, 241, 0.6);
+  --border-subtle: rgba(6, 182, 212, 0.08);
+  --border-default: rgba(6, 182, 212, 0.15);
+  --border-accent: rgba(6, 182, 212, 0.3);
+  --border-accent-strong: rgba(6, 182, 212, 0.6);
 
-  /* 텍스트 색상 */
-  --text-primary: #f0f0f5;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
-  --text-accent: #a5b4fc;
+  /* 텍스트 색상 (청록 계열 어두운 색으로 가독성 확보) */
+  --text-primary: #0f2d35;    /* 짙은 딥 네이비 그린 */
+  --text-secondary: #4b7a85;  /* 민트 톤 차분한 그레이 */
+  --text-muted: #8da6a9;      /* 연한 민트 실버 */
+  --text-accent: #06b6d4;     /* 청록 포인트 */
 
-  /* 액센트 색상 */
-  --accent-primary: #6366f1;
-  --accent-secondary: #8b5cf6;
-  --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --accent-gradient-hover: linear-gradient(135deg, #818cf8, #a78bfa);
-  --accent-glow: rgba(99, 102, 241, 0.25);
+  /* 액센트 색상 (제니트리 시그니처 청록 & 민트) */
+  --accent-primary: #06b6d4;
+  --accent-secondary: #10b981;
+  --accent-gradient: linear-gradient(135deg, #06b6d4, #10b981);
+  --accent-gradient-hover: linear-gradient(135deg, #22d3ee, #34d399);
+  --accent-glow: rgba(6, 182, 212, 0.15);
 
   /* 상태 색상 */
   --success: #10b981;
@@ -42,9 +45,9 @@
   --error: #ef4444;
   --error-bg: rgba(239, 68, 68, 0.1);
 
-  /* 폰트 */
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-heading: 'Outfit', 'Inter', sans-serif;
+  /* 폰트 (한국어 가독성에 최적화된 Noto Sans KR 최우선 배치) */
+  --font-body: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Outfit', 'Noto Sans KR', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* 폰트 크기 */
@@ -56,7 +59,7 @@
   --text-2xl: 1.5rem;
   --text-3xl: 2rem;
   --text-4xl: 2.5rem;
-  --text-5xl: 3.5rem;
+  --text-5xl: 3.2rem;
 
   /* 간격 */
   --space-xs: 4px;
@@ -67,18 +70,18 @@
   --space-2xl: 48px;
   --space-3xl: 64px;
 
-  /* 모서리 라운딩 */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  /* 모서리 라운딩 (귀엽고 트렌디하게 대폭 확장) */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
-  /* 그림자 */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.45);
-  --shadow-glow: 0 0 24px var(--accent-glow);
+  /* 그림자 (맑은 청록색 그림자를 얹어 산뜻한 입체감 부여) */
+  --shadow-sm: 0 2px 8px rgba(6, 182, 212, 0.06);
+  --shadow-md: 0 8px 30px -2px rgba(6, 182, 212, 0.12), 0 2px 8px -1px rgba(16, 185, 129, 0.06);
+  --shadow-lg: 0 16px 40px -4px rgba(6, 182, 212, 0.18), 0 6px 16px -2px rgba(16, 185, 129, 0.15);
+  --shadow-glow: 0 4px 16px rgba(6, 182, 212, 0.25);
 
   /* 트랜지션 */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -87,7 +90,7 @@
   --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* 레이아웃 */
-  --header-height: 64px;
+  --header-height: 72px;
   --max-width: 1400px;
   --panel-gap: 24px;
 }
@@ -110,14 +113,15 @@ html {
 
 body {
   font-family: var(--font-body);
-  background-color: var(--bg-primary);
+  /* [배경 리뉴얼] 청록색부터 연한 옐로우까지 수려하게 흐르는 라이트 그라디언트 탑재 */
+  background: linear-gradient(180deg, #ecfeff 0%, #f0fdf4 30%, #f7fee7 60%, #fffbeb 100%) fixed;
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* 배경 데코레이션 (그라데이션 오브) */
+/* 감성적인 스노우/비누방울 이펙트용 배경 데코레이션 */
 body::before {
   content: '';
   position: fixed;
@@ -126,7 +130,7 @@ body::before {
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -139,7 +143,7 @@ body::after {
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -179,9 +183,9 @@ ul, ol {
 /* --- 3. 타이포그래피 --- */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-weight: 800; /* 조금 더 묵직하고 귀엽게 굵기 강화 */
+  line-height: 1.25;
+  letter-spacing: -0.03em;
 }
 
 h1 { font-size: var(--text-5xl); }
@@ -209,24 +213,24 @@ h3 { font-size: var(--text-xl); }
 
 .page.active {
   display: block;
-  animation: fadeIn 0.4s ease;
+  animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- 5. 버튼 --- */
+/* --- 5. 버튼 (알약 디자인으로 100% 교체) --- */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  padding: 10px 24px;
-  font-weight: 600;
+  padding: 12px 28px;
+  font-weight: 700;
   font-size: var(--text-sm);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full); /* 알약 모양 */
   transition: all var(--transition-default);
   white-space: nowrap;
   position: relative;
@@ -234,67 +238,82 @@ h3 { font-size: var(--text-xl); }
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96) translateY(1px);
 }
 
-/* 주요 버튼 (그라데이션) */
+/* 주요 버튼 (청록 그라디언트 + 입체 그림자) */
 .btn-primary {
   background: var(--accent-gradient);
   color: white;
   box-shadow: var(--shadow-glow);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn-primary:hover {
   background: var(--accent-gradient-hover);
-  box-shadow: 0 0 30px var(--accent-glow);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.35);
+  transform: translateY(-2px);
 }
 
-/* 보조 버튼 (테두리) */
+/* 보조 버튼 (차분하고 둥근 카드형) */
 .btn-secondary {
-  background: var(--bg-tertiary);
+  background: #ffffff;
   color: var(--text-primary);
   border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-accent);
+  background: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+  transform: translateY(-1.5px);
 }
 
 /* 아웃라인 버튼 */
 .btn-outline {
   background: transparent;
   color: var(--text-secondary);
-  border: 1px solid var(--border-default);
+  border: 1.5px solid var(--border-default);
 }
 
 .btn-outline:hover {
-  color: var(--text-primary);
-  border-color: var(--border-accent);
-  background: rgba(99, 102, 241, 0.05);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  background: rgba(6, 182, 212, 0.04);
+  transform: translateY(-1.5px);
 }
 
 /* 성공 버튼 */
 .btn-success {
   background: var(--success);
   color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
 .btn-success:hover {
   background: #0ea572;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+  transform: translateY(-2px);
 }
 
 /* 아이콘 버튼 */
 .btn-icon {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   padding: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  background: white;
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-icon:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-1px);
 }
 
 .btn-icon svg {
@@ -304,30 +323,36 @@ h3 { font-size: var(--text-xl); }
 
 /* 비활성 버튼 */
 .btn:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: not-allowed;
   pointer-events: none;
 }
 
 /* 큰 버튼 */
 .btn-lg {
-  padding: 14px 32px;
+  padding: 16px 36px;
   font-size: var(--text-base);
-  border-radius: var(--radius-lg);
 }
 
-/* --- 6. 카드 --- */
+/* --- 6. 카드 (임직원 복지몰 스타일 반영) --- */
 .card {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  /* 상단에 포인트가 되는 청록 테두리를 넣어 세련됨을 살립니다. */
+  border-top: 3px solid var(--accent-primary); 
+  border-left: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-md);
   transition: all var(--transition-default);
 }
 
 .card:hover {
-  border-color: var(--border-default);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(6, 182, 212, 0.25);
 }
 
 /* 그라데이션 보더 카드 */
@@ -336,6 +361,7 @@ h3 { font-size: var(--text-xl); }
   border: none;
   background: var(--bg-card);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .card-gradient-border::before {
@@ -343,29 +369,30 @@ h3 { font-size: var(--text-xl); }
   position: absolute;
   inset: 0;
   border-radius: var(--radius-lg);
-  padding: 1px;
+  padding: 1.5px;
   background: var(--accent-gradient);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.3;
   transition: opacity var(--transition-default);
 }
 
 .card-gradient-border:hover::before {
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-/* --- 7. 업로드 영역 --- */
+/* --- 7. 업로드 영역 (파스텔 톤 둥글고 귀여운 느낌) --- */
 .upload-zone {
-  border: 2px dashed var(--border-default);
+  border: 2.5px dashed var(--accent-primary);
   border-radius: var(--radius-xl);
   padding: var(--space-3xl) var(--space-2xl);
   text-align: center;
   cursor: pointer;
   transition: all var(--transition-default);
-  background: rgba(18, 18, 26, 0.4);
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
 }
@@ -382,25 +409,26 @@ h3 { font-size: var(--text-xl); }
 
 .upload-zone:hover,
 .upload-zone.drag-over {
-  border-color: var(--accent-primary);
-  background: rgba(99, 102, 241, 0.05);
+  border-color: var(--accent-secondary);
+  background: rgba(6, 182, 212, 0.05);
+  transform: scale(1.01); /* 귀여운 팽창 효과 */
 }
 
 .upload-zone.drag-over::before {
-  opacity: 0.05;
+  opacity: 0.04;
 }
 
 .upload-zone-icon {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   margin: 0 auto var(--space-lg);
   color: var(--accent-primary);
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 .upload-zone-title {
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: var(--space-sm);
   color: var(--text-primary);
 }
@@ -424,8 +452,8 @@ h3 { font-size: var(--text-xl); }
 .upload-zone-divider::after {
   content: '';
   flex: 1;
-  height: 1px;
-  background: var(--border-default);
+  height: 1.5px;
+  background: rgba(6, 182, 212, 0.15);
 }
 
 .upload-zone input[type="file"] {
@@ -435,11 +463,12 @@ h3 { font-size: var(--text-xl); }
 /* --- 8. 프로그레스 바 --- */
 .progress-bar-wrapper {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: var(--bg-tertiary);
   border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .progress-bar-fill {
@@ -460,10 +489,10 @@ h3 { font-size: var(--text-xl); }
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.35) 50%,
     transparent 100%
   );
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.8s infinite;
 }
 
 @keyframes shimmer {
@@ -473,8 +502,8 @@ h3 { font-size: var(--text-xl); }
 
 .progress-bar-text {
   font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--text-accent);
+  font-weight: 700;
+  color: var(--accent-primary);
   margin-top: var(--space-xs);
 }
 
@@ -483,36 +512,38 @@ input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 6px;
+  height: 8px;
   border-radius: var(--radius-full);
   background: var(--bg-tertiary);
   outline: none;
   cursor: pointer;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--accent-gradient);
-  box-shadow: 0 0 10px var(--accent-glow);
+  box-shadow: 0 3px 8px rgba(6, 182, 212, 0.3);
   cursor: pointer;
   transition: transform var(--transition-fast);
+  border: 2px solid white;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.18);
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid white;
   border-radius: 50%;
   background: var(--accent-gradient);
-  box-shadow: 0 0 10px var(--accent-glow);
+  box-shadow: 0 3px 8px rgba(6, 182, 212, 0.3);
   cursor: pointer;
 }
 
@@ -526,7 +557,7 @@ input[type="range"]::-moz-range-thumb {
 
 .slider-row label {
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
   min-width: 80px;
 }
@@ -537,14 +568,14 @@ input[type="range"]::-moz-range-thumb {
 
 .slider-value {
   font-size: var(--text-sm);
-  font-weight: 700;
+  font-weight: 800;
   color: var(--accent-primary);
   min-width: 50px;
   text-align: right;
   font-family: var(--font-mono);
 }
 
-/* --- 10. 체크박스 & 라디오 --- */
+/* --- 10. 체크박스 & 라디오 (둥글둥글 귀여운 스타일) --- */
 .checkbox-group,
 .radio-group {
   display: flex;
@@ -558,10 +589,11 @@ input[type="range"]::-moz-range-thumb {
   align-items: center;
   gap: var(--space-sm);
   cursor: pointer;
-  padding: var(--space-sm) var(--space-md);
+  padding: 10px var(--space-md);
   border-radius: var(--radius-md);
   transition: background var(--transition-fast);
   font-size: var(--text-sm);
+  font-weight: 600;
 }
 
 .checkbox-label:hover,
@@ -573,14 +605,15 @@ input[type="range"]::-moz-range-thumb {
 .radio-label input[type="radio"] {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border: 2px solid var(--border-default);
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all var(--transition-fast);
   position: relative;
   flex-shrink: 0;
+  background: white;
 }
 
 .radio-label input[type="radio"] {
@@ -591,17 +624,18 @@ input[type="range"]::-moz-range-thumb {
 .radio-label input[type="radio"]:checked {
   background: var(--accent-gradient);
   border-color: var(--accent-primary);
+  box-shadow: 0 2px 6px rgba(6, 182, 212, 0.2);
 }
 
 .checkbox-label input[type="checkbox"]:checked::after {
   content: '✓';
   position: absolute;
-  top: 50%;
+  top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .radio-label input[type="radio"]:checked::after {
@@ -610,50 +644,54 @@ input[type="range"]::-moz-range-thumb {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: white;
 }
 
-/* --- 11. 텍스트 입력 --- */
+/* --- 11. 텍스트 입력 (알약형) --- */
 .input-field {
   width: 100%;
-  padding: 10px 16px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  background: white;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-full); /* 알약형 변경 */
   color: var(--text-primary);
   font-size: var(--text-sm);
+  font-weight: 600;
   transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .input-field:focus {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px var(--accent-glow);
+  background: white;
 }
 
 .input-field::placeholder {
   color: var(--text-muted);
 }
 
-/* 숫자 입력 (작은 크기) */
+/* 숫자 입력 (작은 크기, 알약형) */
 .input-number {
-  width: 80px;
-  padding: 6px 10px;
+  width: 90px;
+  padding: 8px 14px;
   text-align: center;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
+  background: white;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-full);
   color: var(--accent-primary);
-  font-weight: 600;
+  font-weight: 800;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 .input-number:focus {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px var(--accent-glow);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 /* --- 12. 메타데이터 그리드 --- */
@@ -662,8 +700,9 @@ input[type="range"]::-moz-range-thumb {
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: var(--space-sm);
   padding: var(--space-md);
-  background: var(--bg-tertiary);
+  background: rgba(6, 182, 212, 0.04);
   border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
 }
 
 .metadata-item {
@@ -673,24 +712,25 @@ input[type="range"]::-moz-range-thumb {
 
 .metadata-label {
   font-size: var(--text-xs);
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .metadata-value {
   font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 800;
+  color: var(--accent-primary);
   font-family: var(--font-mono);
 }
 
 /* --- 13. 로딩 스피너 --- */
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border-default);
+  width: 44px;
+  height: 44px;
+  border: 4px solid var(--border-default);
   border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -716,7 +756,9 @@ input[type="range"]::-moz-range-thumb {
 
 .loading-text {
   font-size: var(--text-sm);
-  color: var(--text-secondary);
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 /* --- 14. 옵션 그룹 --- */
@@ -726,13 +768,13 @@ input[type="range"]::-moz-range-thumb {
 
 .option-group-title {
   font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-weight: 700;
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--space-sm);
   padding-bottom: var(--space-xs);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 2px solid rgba(6, 182, 212, 0.15);
 }
 
 /* 옵션 버튼 그룹 (가로 나열) */
@@ -743,27 +785,30 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .option-btn {
-  padding: 8px 16px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  background: white;
+  border: 2.5px solid var(--border-default);
+  border-radius: var(--radius-full); /* 알약형 */
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-secondary);
   transition: all var(--transition-fast);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
 .option-btn:hover {
-  background: var(--bg-card-hover);
+  background: var(--bg-tertiary);
   color: var(--text-primary);
-  border-color: var(--border-accent);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
 }
 
 .option-btn.active {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(6, 182, 212, 0.1);
   color: var(--accent-primary);
   border-color: var(--accent-primary);
+  box-shadow: 0 4px 10px rgba(6, 182, 212, 0.15);
 }
 
 /* --- 15. 토스트 알림 --- */
@@ -779,19 +824,21 @@ input[type="range"]::-moz-range-thumb {
 
 .toast {
   padding: var(--space-md) var(--space-lg);
-  background: var(--bg-card);
-  border: 1px solid var(--border-default);
+  background: white;
+  border: 1px solid rgba(6, 182, 212, 0.15);
   border-radius: var(--radius-md);
   backdrop-filter: blur(12px);
   box-shadow: var(--shadow-lg);
   font-size: var(--text-sm);
-  animation: slideInRight 0.3s ease;
+  font-weight: 600;
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   max-width: 360px;
+  color: var(--text-primary);
 }
 
-.toast.success { border-left: 3px solid var(--success); }
-.toast.error { border-left: 3px solid var(--error); }
-.toast.warning { border-left: 3px solid var(--warning); }
+.toast.success { border-left: 4px solid var(--success); }
+.toast.error { border-left: 4px solid var(--error); }
+.toast.warning { border-left: 4px solid var(--warning); }
 
 @keyframes slideInRight {
   from { transform: translateX(100%); opacity: 0; }
@@ -809,8 +856,10 @@ input[type="range"]::-moz-range-thumb {
   width: 100%;
   border-radius: var(--radius-md);
   overflow: hidden;
+  border: 2px solid var(--border-default);
+  /* 밝은 격자무늬 패턴으로 변경 */
   background: repeating-conic-gradient(
-    rgba(255,255,255,0.03) 0% 25%, 
+    rgba(0,0,0,0.03) 0% 25%, 
     transparent 0% 50%
   ) 50% / 20px 20px;
 }
@@ -828,16 +877,17 @@ input[type="range"]::-moz-range-thumb {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-default);
+  background: var(--border-accent);
   border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: var(--accent-primary);
 }
 
 /* --- 18. 유틸리티 클래스 --- */
@@ -873,9 +923,9 @@ input[type="range"]::-moz-range-thumb {
     --space-xl: 24px;
     --space-2xl: 32px;
     --space-3xl: 48px;
-    --text-5xl: 2.5rem;
-    --text-4xl: 2rem;
-    --text-3xl: 1.5rem;
+    --text-5xl: 2.3rem;
+    --text-4xl: 1.8rem;
+    --text-3xl: 1.4rem;
   }
 
   .page {
@@ -886,6 +936,6 @@ input[type="range"]::-moz-range-thumb {
 
 /* --- 20. 선택(Selection) --- */
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
-  color: white;
+  background: rgba(6, 182, 212, 0.2);
+  color: var(--text-primary);
 }

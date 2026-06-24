@@ -26,8 +26,9 @@
 .editor-description {
   font-size: var(--text-base);
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.75;
   margin-bottom: var(--space-2xl);
+  font-weight: 600; /* 설명 가독성을 위해 살짝 굵게 조절 */
 }
 
 .editor-description p {
@@ -35,13 +36,13 @@
 }
 
 .editor-description .highlight {
-  color: var(--success);
-  font-weight: 500;
+  color: var(--accent-secondary);
+  font-weight: 700;
 }
 
 /* --- 편집 워크스페이스 (업로드 후) --- */
 #editor-workspace {
-  animation: fadeIn 0.5s ease;
+  animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .editor-layout {
@@ -57,57 +58,64 @@
 .panel-column {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 /* --- 이미지 패널 공통 --- */
 .image-panel {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  border-top: 3px solid var(--accent-primary); 
+  border-left: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
   overflow: hidden;
+  box-shadow: var(--shadow-md);
   transition: all var(--transition-default);
 }
 
 .image-panel:hover {
-  border-color: var(--border-default);
+  border-color: rgba(6, 182, 212, 0.25);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
-/* 패널 헤더 */
+/* 패널 헤더 리뉴얼 (화사한 파스텔 민트바 배경) */
 .panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-md) var(--space-lg);
-  border-bottom: 1px solid var(--border-subtle);
-  background: rgba(26, 26, 46, 0.3);
+  padding: 14px var(--space-lg);
+  border-bottom: 1.5px solid rgba(6, 182, 212, 0.1);
+  background: rgba(6, 182, 212, 0.04);
 }
 
 .panel-title {
   font-family: var(--font-heading);
   font-size: var(--text-base);
-  font-weight: 600;
+  font-weight: 800; /* 타이틀 강조 */
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  color: var(--text-primary);
 }
 
 .panel-title-icon {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .panel-title-icon.original {
   background: var(--accent-primary);
-  box-shadow: 0 0 8px var(--accent-glow);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
 }
 
 .panel-title-icon.result {
   background: var(--success);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
 }
 
 .panel-actions {
@@ -118,25 +126,27 @@
 
 /* 토글 버튼 (접기/펼치기) */
 .btn-toggle {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
   transition: all var(--transition-fast);
-  font-size: 12px;
+  border: 1px solid var(--border-default);
+  background: white;
 }
 
 .btn-toggle:hover {
   background: var(--bg-tertiary);
-  color: var(--text-primary);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
 }
 
 .btn-toggle svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   transition: transform var(--transition-default);
 }
 
@@ -159,22 +169,30 @@
   opacity: 0;
 }
 
-/* 이미지 디스플레이 */
+/* 이미지 디스플레이 격자배경 밝은 테마로 쇄신 */
 .panel-image-container {
   position: relative;
   width: 100%;
   background: repeating-conic-gradient(
-    rgba(255,255,255,0.02) 0% 25%, 
+    rgba(0, 0, 0, 0.02) 0% 25%, 
     transparent 0% 50%
   ) 50% / 16px 16px;
+  border-bottom: 1.5px solid rgba(6, 182, 212, 0.1);
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-md) 0;
 }
 
 .panel-image-container img {
-  width: 100%;
+  max-width: 95%;
+  max-height: 500px;
   height: auto;
   display: block;
   object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* 메타데이터 (이미지 하단) */
@@ -184,30 +202,35 @@
 
 /* 패널 다운로드 버튼 */
 .panel-download-btn {
-  padding: 6px 14px;
+  padding: 8px 18px;
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: 750;
 }
 
-/* 결과물 추가 편집 버튼 */
+/* 결과물 추가 편집 버튼 (알약 및 청록 점선 칩으로 디자인 변경) */
 .btn-apply-more {
   width: 100%;
   margin-top: var(--space-sm);
-  padding: 8px;
+  padding: 10px;
   font-size: var(--text-xs);
-  color: var(--text-muted);
-  border: 1px dashed var(--border-default);
-  border-radius: var(--radius-md);
+  font-weight: 700;
+  color: var(--accent-primary);
+  border: 2px dashed var(--accent-primary);
+  background-color: white;
+  border-radius: var(--radius-full); /* 알약 스타일 */
   transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-apply-more:hover {
-  color: var(--accent-primary);
-  border-color: var(--accent-primary);
-  background: rgba(99, 102, 241, 0.05);
+  color: white;
+  background: var(--accent-gradient);
+  border-color: transparent;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 16px rgba(6, 182, 212, 0.25);
 }
 
-/* --- Editor Tools 패널 (오른쪽) --- */
+/* --- Editor Tools 패널 (오른쪽 sticky) --- */
 .tools-column {
   position: sticky;
   top: calc(var(--header-height) + var(--space-lg));
@@ -215,30 +238,35 @@
 
 #editor-tools-panel {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  border-top: 3px solid var(--accent-primary); 
+  border-left: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
   padding: var(--space-lg);
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  box-shadow: var(--shadow-md);
 }
 
 /* 도구 패널 제목 */
 .tools-panel-title {
   font-family: var(--font-heading);
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 800;
   text-align: center;
   padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 2px solid rgba(6, 182, 212, 0.15);
+  color: var(--text-primary);
 }
 
 /* --- 도구 버튼 그리드 (3x3) --- */
 .tools-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-sm);
+  gap: 10px;
 }
 
 .tool-btn {
@@ -246,70 +274,108 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-sm);
-  padding: var(--space-md) var(--space-sm);
+  padding: 14px var(--space-xs);
   border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
+  border: 1.5px solid var(--border-default);
+  background: white; /* 둥근 흰색 카드 */
+  color: var(--text-primary);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
   transition: all var(--transition-default);
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.tool-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent-gradient);
-  opacity: 0;
-  transition: opacity var(--transition-default);
-}
-
 .tool-btn:hover {
-  color: var(--text-primary);
-  border-color: var(--border-accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
-}
-
-.tool-btn:hover::before {
-  opacity: 0.08;
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(6, 182, 212, 0.12);
 }
 
 .tool-btn:active {
-  transform: translateY(0);
+  transform: translateY(-1px);
 }
 
+/* 
+   [핵심 디자인 리뉴얼] 
+   아이콘 뒤에 둥근 파스텔 원형 배경을 추가하여 
+   사용자가 만든 것 같은 산뜻하고 아름다운 분위기를 형성합니다.
+*/
 .tool-btn-icon {
   position: relative;
   z-index: 1;
-  width: 28px;
-  height: 28px;
-  color: var(--accent-primary);
-  transition: transform var(--transition-default);
+  width: 44px;
+  height: 44px;
+  padding: 9px;
+  border-radius: 50%; /* 완전 둥글게 원형 */
+  transition: all var(--transition-default);
 }
 
+/* 9가지 도구별로 개별적인 파스텔 백그라운드 색상 바인딩 */
+.tool-btn[data-tool="resize"] .tool-btn-icon {
+  color: #06b6d4;
+  background-color: #ecfeff;
+}
+.tool-btn[data-tool="crop"] .tool-btn-icon {
+  color: #10b981;
+  background-color: #e6fcf5;
+}
+.tool-btn[data-tool="downsizing"] .tool-btn-icon {
+  color: #f59e0b;
+  background-color: #fffbeb;
+}
+.tool-btn[data-tool="convert"] .tool-btn-icon {
+  color: #6366f1;
+  background-color: #eef2ff;
+}
+.tool-btn[data-tool="rotate"] .tool-btn-icon {
+  color: #ec4899;
+  background-color: #fdf2f8;
+}
+.tool-btn[data-tool="optimize"] .tool-btn-icon {
+  color: #14b8a6;
+  background-color: #f0fdfa;
+}
+.tool-btn[data-tool="reverse"] .tool-btn-icon {
+  color: #8b5cf6;
+  background-color: #f5f3ff;
+}
+.tool-btn[data-tool="speed"] .tool-btn-icon {
+  color: #f43f5e;
+  background-color: #fff1f2;
+}
+.tool-btn[data-tool="cut"] .tool-btn-icon {
+  color: #ca8a04;
+  background-color: #fef9c3;
+}
+
+/* 호버 시 아이콘 약간 팽창 및 회전 스릴 제공 */
 .tool-btn:hover .tool-btn-icon {
-  transform: scale(1.15);
+  transform: scale(1.1) rotate(6deg);
 }
 
 .tool-btn-label {
   position: relative;
   z-index: 1;
   font-size: var(--text-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-secondary);
+}
+
+.tool-btn:hover .tool-btn-label {
+  color: var(--accent-primary);
 }
 
 /* --- 도구 상세 패널 --- */
 #tool-detail {
-  animation: slideInDetail 0.3s ease;
+  animation: slideInDetail 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideInDetail {
-  from { opacity: 0; transform: translateX(20px); }
+  from { opacity: 0; transform: translateX(18px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
@@ -318,7 +384,7 @@
   align-items: center;
   gap: var(--space-sm);
   padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 2px solid rgba(6, 182, 212, 0.15);
   margin-bottom: var(--space-lg);
 }
 
@@ -331,7 +397,8 @@
 .tool-detail-title {
   font-family: var(--font-heading);
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
 #tool-detail-content {
@@ -345,19 +412,20 @@
   gap: var(--space-sm);
   margin-top: var(--space-xl);
   padding-top: var(--space-lg);
-  border-top: 1px solid var(--border-subtle);
+  border-top: 1.5px solid rgba(6, 182, 212, 0.1);
 }
 
 .tool-actions .btn {
   padding: 12px;
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
 }
 
 /* --- Choose Another File 버튼 --- */
 #btn-choose-another {
   width: 100%;
-  padding: 10px;
+  padding: 11px;
   font-size: var(--text-sm);
+  font-weight: 700;
 }
 
 /* --- 프레임 타임라인 (Cut 기능) --- */
@@ -369,30 +437,33 @@
 
 .frame-timeline-strip {
   display: flex;
-  gap: 2px;
+  gap: 3px;
   min-width: max-content;
 }
 
 .frame-thumb {
-  width: 40px;
-  height: 30px;
-  border-radius: 3px;
+  width: 44px;
+  height: 33px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   cursor: pointer;
   border: 2px solid transparent;
   transition: all var(--transition-fast);
   flex-shrink: 0;
-  opacity: 0.5;
+  opacity: 0.45;
+  box-shadow: var(--shadow-sm);
 }
 
 .frame-thumb.in-range {
   opacity: 1;
-  border-color: var(--accent-primary);
+  border-color: rgba(6, 182, 212, 0.5);
 }
 
 .frame-thumb.selected {
-  border-color: var(--success);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+  border-color: var(--accent-primary);
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(6, 182, 212, 0.25);
 }
 
 .frame-thumb canvas,
@@ -402,35 +473,39 @@
   object-fit: cover;
 }
 
-/* --- 자물쇠 아이콘 (Resize 비율 잠금) --- */
+/* --- 자물쇠 아이콘 (Resize 비율 잠금, 완전 원형) --- */
 .lock-btn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-default);
-  color: var(--accent-primary);
+  border-radius: 50%; /* 원형 변경 */
+  border: 2px solid var(--border-default);
+  background: white;
+  color: var(--text-secondary);
   transition: all var(--transition-fast);
   cursor: pointer;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .lock-btn:hover {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(6, 182, 212, 0.05);
   border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 .lock-btn.locked {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(6, 182, 212, 0.1);
   border-color: var(--accent-primary);
   color: var(--accent-primary);
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.15);
 }
 
 .lock-btn.unlocked {
   color: var(--text-muted);
-  border-color: var(--border-subtle);
+  border-color: var(--border-default);
 }
 
 /* --- Crop 오버레이 (인터랙티브 크롭) --- */
@@ -442,26 +517,28 @@
 .crop-selection {
   position: absolute;
   border: 2px solid var(--accent-primary);
-  background: rgba(99, 102, 241, 0.1);
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  background: rgba(6, 182, 212, 0.1);
+  /* 크롭 외 바깥 영역 그림자(어둡게) */
+  box-shadow: 0 0 0 9999px rgba(15, 45, 53, 0.45);
   pointer-events: none;
 }
 
+/* 조절자 핸들을 좀더 크고 누르기 쉽게 리스타일 */
 .crop-handle {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   background: white;
-  border: 2px solid var(--accent-primary);
-  border-radius: 2px;
+  border: 2.5px solid var(--accent-primary);
+  border-radius: 50%; /* 완전 원형 조절칩 */
   pointer-events: all;
-  cursor: nw-resize;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-.crop-handle.tl { top: -6px; left: -6px; cursor: nw-resize; }
-.crop-handle.tr { top: -6px; right: -6px; cursor: ne-resize; }
-.crop-handle.bl { bottom: -6px; left: -6px; cursor: sw-resize; }
-.crop-handle.br { bottom: -6px; right: -6px; cursor: se-resize; }
+.crop-handle.tl { top: -7px; left: -7px; cursor: nw-resize; }
+.crop-handle.tr { top: -7px; right: -7px; cursor: ne-resize; }
+.crop-handle.bl { bottom: -7px; left: -7px; cursor: sw-resize; }
+.crop-handle.br { bottom: -7px; right: -7px; cursor: se-resize; }
 
 /* --- 프로세싱 오버레이 --- */
 .processing-overlay {
@@ -472,7 +549,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-md);
-  background: rgba(10, 10, 15, 0.85);
+  background: rgba(255, 255, 255, 0.85); /* 밝은 반투명 처리 */
   backdrop-filter: blur(8px);
   border-radius: inherit;
   z-index: 20;
@@ -485,7 +562,8 @@
 
 .processing-text {
   font-size: var(--text-sm);
-  color: var(--text-secondary);
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .processing-progress {
@@ -512,7 +590,7 @@
 
   .tools-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-xs);
+    gap: 8px;
   }
 
   .tool-btn {
@@ -520,8 +598,9 @@
   }
 
   .tool-btn-icon {
-    width: 24px;
-    height: 24px;
+    width: 38px;
+    height: 38px;
+    padding: 7px;
   }
 
   .tool-btn-label {
