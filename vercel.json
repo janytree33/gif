@@ -1,0 +1,19 @@
+{
+  "builds": [
+    {
+      "src": "gif/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Access-Control-Allow-Origin": "*"
+      },
+      "dest": "gif/$1"
+    }
+  ]
+}
