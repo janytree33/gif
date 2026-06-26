@@ -95,6 +95,11 @@ export default {
                 command: command,
             });
             
+            // Wasm 실행 결과 유효성 검증 예외 처리 보강
+            if (!result || result.length === 0 || !result[0]) {
+                throw new Error("Gifsicle 최적화 모듈이 빈 결과물을 반환했습니다.");
+            }
+            
             onProgress(100);
             
             // 결과 파일(File 객체) 반환

@@ -2,7 +2,7 @@ import { encodeGif } from '../gif-encoder.js';
 
 export default {
     name: 'crop',
-    label: '영역 자르기',
+    label: 'Crop',
     
     renderPanel(container, gifData) {
         container.innerHTML = `
@@ -42,7 +42,7 @@ export default {
             
             <div class="metadata-grid mt-lg">
                 <div class="metadata-item">
-                    <div class="metadata-label">자르는 영역 크기</div>
+                    <div class="metadata-label">Cropped Area</div>
                     <div class="metadata-value text-accent" id="crop-info-size">${gifData.width} × ${gifData.height}</div>
                 </div>
             </div>
