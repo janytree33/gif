@@ -78,7 +78,7 @@ async function ensureFFmpegLoaded() {
             await ffmpeg.load({
                 coreURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js',
                 wasmURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm',
-                classWorkerURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js' // 웹 워커 역시 CDN 경로를 사용합니다.
+                classWorkerURL: '/js/worker.js' // 웹 워커는 보안을 위해 동일 도메인(Same-origin)의 로컬 경로를 사용합니다.
             });
             
             statusArea.classList.add('hidden');
