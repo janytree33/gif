@@ -24,11 +24,11 @@ const mimeTypes = {
 http.createServer((req, res) => {
     // 요청받은 주소(URL)에서 불필요한 파라미터(?뒤쪽 부분)를 제거하고 파일 경로로 변환합니다.
     const urlPath = req.url.split('?')[0];
-    let filePath = './gif' + urlPath; // [수정] 모든 소스코드가 gif 폴더 하위로 이전되어 경로를 변경했습니다.
+    let filePath = '.' + urlPath;
     
     // 사용자가 그냥 주소만 입력하고 들어왔다면 기본 페이지인 index.html을 보여줍니다.
-    if (filePath === './gif/') {
-        filePath = './gif/index.html';
+    if (filePath === './') {
+        filePath = './index.html';
     }
 
     // 파일의 확장자를 추출합니다. (예: .html, .js 등)
