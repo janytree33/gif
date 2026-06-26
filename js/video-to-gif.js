@@ -1,9 +1,9 @@
 // 유틸리티 파일에서 용량 표기 함수(formatBytes)와 팝업 메시지 함수(showToast)를 가져옵니다.
 import { formatBytes, showToast } from './utils.js';
 
-// [로컬 불러오기 추가] 인터넷 주소 대신, 우리 컴퓨터에 설치된 라이브러리에서 직접 변환 도구들을 가져옵니다.
-import { FFmpeg } from '/node_modules/@ffmpeg/ffmpeg/dist/esm/index.js';
-import { fetchFile } from '/node_modules/@ffmpeg/util/dist/esm/index.js';
+// [로컬 불러오기 추가] 인터넷 주소 대신, CDN에서 직접 변환 도구들을 가져옵니다.
+import { FFmpeg } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/+esm';
+import { fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.2/+esm';
 
 // 전역 변수로 비디오 변환 엔진(ffmpeg)과 현재 선택한 비디오 파일(currentFile)을 저장합니다.
 let ffmpeg = null;
@@ -73,12 +73,12 @@ async function ensureFFmpegLoaded() {
             // FFmpeg 엔진의 새 인스턴스를 만듭니다.
             ffmpeg = new FFmpeg();
             
-            // [경로 수정] 인터넷 CDN 주소 대신, 로컬 컴퓨터 내부의 안전한 파일 경로를 지정합니다.
+            // [경로 수정] 인터넷 CDN 주소를 지정합니다.
             // 이렇게 하면 웹 브라우저의 보안 검사를 완벽히 통과하여 에러가 발생하지 않습니다.
             await ffmpeg.load({
-                coreURL: '/node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.js',
-                wasmURL: '/node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.wasm',
-                classWorkerURL: '/node_modules/@ffmpeg/ffmpeg/dist/esm/worker.js' // 웹 워커 역시 로컬 경로를 사용합니다.
+                coreURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js',
+                wasmURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm',
+                classWorkerURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm/worker.js' // 웹 워커 역시 CDN 경로를 사용합니다.
             });
             
             statusArea.classList.add('hidden');
