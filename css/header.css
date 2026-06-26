@@ -45,14 +45,14 @@
 
 /* 사용자의 로고 디자인(엠블럼 원형 스타일) 완벽 이식 */
 .logo-img {
-  height: 44px;
-  width: 44px;
+  height: 48px;
+  width: auto;
   object-fit: contain;
-  border-radius: 50%;
-  background-color: #ffffff;
-  border: 2px solid rgba(6, 182, 212, 0.15);
-  box-shadow: 0 4px 10px rgba(6, 182, 212, 0.1);
-  padding: 4px;
+  border-radius: 0;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
   transition: all var(--transition-default);
 }
 

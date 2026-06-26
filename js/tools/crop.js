@@ -16,7 +16,7 @@ export default {
                 </div>
             </div>
             
-            <div class="crop-overlay-container mb-lg" id="crop-container" style="display: inline-block; position: relative; max-width: 100%; border: 1px solid var(--border-default);">
+            <div class="crop-overlay-container mb-lg" id="crop-container" style="display: inline-block; position: relative; max-width: 100%; border: 1px solid var(--border-default); overflow: hidden;">
                 <canvas id="crop-preview" style="display: block; max-width: 100%; height: auto;"></canvas>
                 <div class="crop-selection" id="crop-box" style="top: 0; left: 0; width: 100%; height: 100%;">
                     <div class="crop-handle tl" data-handle="tl"></div>
@@ -56,7 +56,6 @@ export default {
         
         previewCanvas.width = gifData.width;
         previewCanvas.height = gifData.height;
-        ctx.drawImage(gifData.frames[0].canvas, 0, 0);
         
         // 크롭 박스 상태 (캔버스 원본 크기 기준 0~1 비율)
         let box = { x: 0, y: 0, w: 1, h: 1 };
@@ -182,7 +181,12 @@ export default {
         window.addEventListener('resize', updateDisplayScale);
         
         // 초기화
-        setTimeout(updateDisplayScale, 100);
+        setTimeout(() => {
+            // [버그 수정] 레이아웃 배치 완료 100ms 후 이미지를 안전하게 복제하여 미리보기 출력
+            ctx.drawImage(gifData.frames[0].canvas, 0, 0);
+            updateDisplayScale();
+            updateBoxDOM();
+        }, 100);
         
         this.getParams = () => {
             return {
