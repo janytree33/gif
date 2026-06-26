@@ -2,7 +2,7 @@ import { encodeGif } from '../gif-encoder.js';
 
 export default {
     name: 'crop',
-    label: 'Crop',
+    label: '영역 자르기',
     
     renderPanel(container, gifData) {
         container.innerHTML = `
@@ -42,7 +42,7 @@ export default {
             
             <div class="metadata-grid mt-lg">
                 <div class="metadata-item">
-                    <div class="metadata-label">Cropped Area</div>
+                    <div class="metadata-label">자르는 영역 크기</div>
                     <div class="metadata-value text-accent" id="crop-info-size">${gifData.width} × ${gifData.height}</div>
                 </div>
             </div>
@@ -178,15 +178,32 @@ export default {
         });
         
         // 창 크기 변경 시 스케일 업데이트
-        window.addEventListener('resize', updateDisplayScale);
-        
-        // 초기화
-        setTimeout(() => {
-            // [버그 수정] 레이아웃 배치 완료 100ms 후 이미지를 안전하게 복제하여 미리보기 출력
-            ctx.drawImage(gifData.frames[0].canvas, 0, 0);
+        window.addEventListener('resize', () => {
             updateDisplayScale();
-            updateBoxDOM();
-        }, 100);
+            drawPreviewCanvas();
+        });
+        
+        // 캔버스 그리기 전용 함수 (레이아웃 시점 불일치 극복을 위해 너비/높이를 명시하여 드로잉)
+        const drawPreviewCanvas = () => {
+            if (previewCanvas && ctx && gifData.frames && gifData.frames.length > 0) {
+                ctx.drawImage(gifData.frames[0].canvas, 0, 0, gifData.width, gifData.height);
+            }
+        };
+
+        // 초기화 시점 렌더링 및 다중 틱 점진적 드로잉 보장
+        drawPreviewCanvas();
+        updateDisplayScale();
+        updateBoxDOM();
+
+        // 브라우저 리플로우 및 레이아웃 시간차로 인한 유실을 원천 차단하기 위해
+        // 50ms, 150ms, 300ms, 500ms에 걸쳐 점진적으로 다시 그리기를 수행합니다.
+        [50, 150, 300, 500].forEach(delay => {
+            setTimeout(() => {
+                drawPreviewCanvas();
+                updateDisplayScale();
+                updateBoxDOM();
+            }, delay);
+        });
         
         this.getParams = () => {
             return {
