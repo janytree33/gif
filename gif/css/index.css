@@ -5,8 +5,7 @@
    버튼, 카드 등의 기본 스타일을 정의합니다.
    ============================================ */
 
-/* 폰트 및 아이콘 통합 로드 */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+/* 폰트 및 아이콘 통합 로드 (HTML 영역에서 crossorigin 로드로 대체하여 삭제함) */
 
 /* --- 1. CSS 커스텀 프로퍼티 (디자인 토큰) --- */
 :root {
