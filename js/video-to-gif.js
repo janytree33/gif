@@ -72,13 +72,21 @@ async function ensureFFmpegLoaded() {
         try {
             // FFmpeg 엔진의 새 인스턴스를 만듭니다.
             ffmpeg = new FFmpeg();
+
+            // [핵심 보안 우회 기법 - Blob URL]
+            // 브라우저는 다른 도메인(CDN 등)의 Worker 스크립트를 직접 실행하는 것을 막습니다.
+            // 이를 해결하기 위해: 우리 서버(/js/worker.js)에서 파일을 가져온 뒤,
+            // 브라우저 메모리 안에서만 살아있는 임시 URL(Blob URL)로 변환합니다.
+            // 브라우저 입장에서 Blob URL은 현재 페이지와 '같은 출처'로 취급되므로 보안 에러가 사라집니다.
+            const workerResponse = await fetch('/js/worker.js');
+            const workerText = await workerResponse.text();
+            const workerBlob = new Blob([workerText], { type: 'application/javascript' });
+            const workerBlobURL = URL.createObjectURL(workerBlob);
             
-            // [경로 수정] 인터넷 CDN 주소를 지정합니다.
-            // 이렇게 하면 웹 브라우저의 보안 검사를 완벽히 통과하여 에러가 발생하지 않습니다.
             await ffmpeg.load({
                 coreURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js',
                 wasmURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm',
-                classWorkerURL: '/js/worker.js' // 웹 워커는 보안을 위해 동일 도메인(Same-origin)의 로컬 경로를 사용합니다.
+                classWorkerURL: workerBlobURL // 브라우저 메모리 임시 주소(Blob URL)를 워커로 사용합니다.
             });
             
             statusArea.classList.add('hidden');
