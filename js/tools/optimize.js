@@ -58,6 +58,7 @@ export default {
     
     async execute(gifData, onProgress) {
         const { level, lossy } = this.getParams();
+        const originalSize = gifData.fileSize; // 원본 파일 크기 보관
         
         // 1. 먼저 현재 프레임 상태를 기본 GIF로 인코딩 (gifsicle의 입력값으로 사용하기 위해)
         onProgress(10);
@@ -67,9 +68,12 @@ export default {
         
         onProgress(50);
         
+        let finalBlob = null;
+        let isFallback = false;
+        
         try {
-            // gifsicle-wasm-browser 동적 로드
-            const module = await import('https://cdn.jsdelivr.net/npm/gifsicle-wasm-browser/dist/gifsicle.min.js');
+            // gifsicle-wasm-browser 동적 로드 (안정적인 ESM 자동 변환 주소 적용)
+            const module = await import('https://cdn.jsdelivr.net/npm/gifsicle-wasm-browser/+esm');
             const gifsicle = module.default;
             
             // Blob을 File 객체로 변환
@@ -95,36 +99,36 @@ export default {
                 command: command,
             });
             
-            // Wasm 실행 결과 유효성 검증 예외 처리 보강
+            // Wasm 실행 결과 유효성 검증
             if (!result || result.length === 0 || !result[0]) {
-                throw new Error("Gifsicle 최적화 모듈이 빈 결과물을 반환했습니다.");
+                throw new Error("최적화 모듈 결과 파일이 비어 있습니다.");
             }
             
+            finalBlob = result[0];
             onProgress(100);
             
-            // 결과 파일(File 객체) 반환
-            const optimizedBlob = result[0];
-            
-            return {
-                blob: optimizedBlob,
-                newData: { ...gifData },
-                toolName: 'Optimized'
-            };
-            
         } catch (e) {
-            console.error("Optimize failed via gifsicle, falling back to gif.js quality reduction", e);
+            console.warn("Optimize failed via gifsicle Wasm, falling back to gif.js quality reduction", e);
+            isFallback = true;
             
-            // fallback: gif.js의 quality 설정을 낮게 주어 다시 인코딩
-            const fallbackQuality = 20 + (level * 5); // level이 높을수록 quality 숫자(낮은 품질) 증가
-            const fallbackBlob = await encodeGif(gifData.frames, { quality: fallbackQuality }, (p) => {
+            // fallback: gif.js의 quality 설정을 더 낮게 주어 강제 최적화 인코딩 시도
+            const fallbackQuality = 25 + (level * 5); // level에 따라 30~40 수준으로 품질을 낮춤
+            finalBlob = await encodeGif(gifData.frames, { quality: fallbackQuality }, (p) => {
                 onProgress(50 + (p * 50));
             });
-            
-            return {
-                blob: fallbackBlob,
-                newData: { ...gifData },
-                toolName: 'Optimized (Fallback)'
-            };
         }
+        
+        // [용량 역전 안전장치] 결과 용량이 원본 크기보다 크거나 같다면 작업을 강제 차단하고 대안 가이드를 안내합니다.
+        if (finalBlob && finalBlob.size >= originalSize) {
+            throw new Error(`최적화된 용량(${formatBytes(finalBlob.size)})이 원본 용량(${formatBytes(originalSize)})보다 큽니다.
+이 GIF는 이미 최대로 압축되어 있거나 용량이 너무 커서 단순 최적화가 불가능합니다.
+대신 [Downsizing] 메뉴에서 색상 수를 줄이거나, 해상도를 축소하거나, 프레임을 솎아내어(프레임 드롭) 확실하게 용량을 줄여주세요!`);
+        }
+        
+        return {
+            blob: finalBlob,
+            newData: { ...gifData, fileSize: finalBlob.size },
+            toolName: isFallback ? 'Optimized (Fallback)' : 'Optimized'
+        };
     }
 };
